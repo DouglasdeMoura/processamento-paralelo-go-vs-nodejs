@@ -301,7 +301,7 @@ export function monteCarloPiParallel(numSamples, numWorkers) {
       worker.on('error', (err) => { reject(err) })
       worker.postMessage(samplesPerWorker)
     }
-  }).then(() => process.exit())
+  })
 }
 ```
 ````
