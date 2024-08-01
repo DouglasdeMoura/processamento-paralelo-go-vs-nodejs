@@ -88,12 +88,12 @@ layoutClass: gap-16
 
 Só é possível em sistemas multi-core ou com múltiplos processadores onde cada core ou processador executa instruções independentemente.
 
-![Parallel Computing](./image.png "Fonte: https://hpc.llnl.gov/documentation/tutorials/introduction-parallel-computing-tutorial") 
+![Parallel Computing](./images/image.png "Fonte: https://hpc.llnl.gov/documentation/tutorials/introduction-parallel-computing-tutorial") 
 
 
 ---
 layout: image-right
-image: ./cassino.jpeg
+image: ./images/cassino.jpeg
 ---
 
 # Método de Monte Carlo
