@@ -1,16 +1,16 @@
 ---
 # You can also start simply with 'default'
-theme: seriph
+theme: apple-basic
 # random image from a curated Unsplash collection by Anthony
 # like them? see https://unsplash.com/collections/94734566/slidev
 background: https://cover.sli.dev
 # some information about your slides (markdown enabled)
-title: Welcome to Slidev
-info: |
-  ## Slidev Starter Template
-  Presentation slides for developers.
+title: "Processamento paralelo: Go vs. Node.js"
+# info: |
+#   ## Slidev Starter Template
+#   Presentation slides for developers.
 
-  Learn more at [Sli.dev](https://sli.dev)
+#   Learn more at [Sli.dev](https://sli.dev)
 # apply unocss classes to the current slide
 class: text-center
 # https://sli.dev/features/drawing
@@ -20,71 +20,24 @@ drawings:
 transition: slide-left
 # enable MDC Syntax: https://sli.dev/features/mdc
 mdc: true
+hideInToc: true
 ---
 
-# Welcome to Slidev
+# Processamento paralelo: Go vs. Node.js
 
-Presentation slides for developers
-
-<div class="pt-12">
-  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Press Space for next page <carbon:arrow-right class="inline"/>
-  </span>
-</div>
 
 <div class="abs-br m-6 flex gap-2">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="text-xl slidev-icon-btn opacity-50 !border-none !hover:text-white">
+  <button @click="$slidev.nav.openInEditor()" title="Abrir no editor" class="text-xl slidev-icon-btn opacity-50 !border-none !hover:text-white">
     <carbon:edit />
   </button>
-  <a href="https://github.com/slidevjs/slidev" target="_blank" alt="GitHub" title="Open in GitHub"
+  <a href="https://github.com/douglasdemoura/processamento-paralelo-go-vs-nodejs" target="_blank" alt="GitHub" title="Abra no GitHub"
     class="text-xl slidev-icon-btn opacity-50 !border-none !hover:text-white">
     <carbon-logo-github />
   </a>
 </div>
 
 <!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
-
----
-transition: fade-out
----
-
-# What is Slidev?
-
-Slidev is a slides maker and presenter designed for developers, consist of the following features
-
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - themes can be shared and re-used as npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embed Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export to PDF, PPTX, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - virtually anything that's possible on a webpage is possible in Slidev
-<br>
-<br>
-
-Read more about [Why Slidev?](https://sli.dev/guide/why)
-
-<!--
-You can have `style` tag in markdown to override the style for the current page.
-Learn more: https://sli.dev/features/slide-scope-style
--->
-
-<style>
-h1 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
-<!--
-Here is another comment.
+Esta apresentação explora as capacidades de processamento paralelo em Go e Node.js. Compararemos seus modelos de concorrência, examinaremos exemplos de código e discutiremos as implicações de desempenho. Através de demonstrações práticas, incluindo uma estimativa de Pi usando o método de Monte Carlo, destacaremos os pontos fortes e casos de uso de cada linguagem em cenários de computação paralela. Seja você um desenvolvedor escolhendo entre essas tecnologias ou um arquiteto projetando sistemas escaláveis, esta palestra fornecerá insights valiosos sobre como aproveitar o processamento multi-core em Go e Node.js.
 -->
 
 ---
@@ -92,547 +45,328 @@ transition: slide-up
 level: 2
 ---
 
-# Navigation
+# Introdução
 
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/navigation.html)
+- Processamento paralelo em aplicações modernas:
+  - Uso de múltiplos núcleos de CPU;
+  - Cálculo matriciais para aplicações de ML e AI.
 
-## Keyboard Shortcuts
+<br>
 
-|     |     |
-| --- | --- |
-| <kbd>right</kbd> / <kbd>space</kbd>| next animation or slide |
-| <kbd>left</kbd>  / <kbd>shift</kbd><kbd>space</kbd> | previous animation or slide |
-| <kbd>up</kbd> | previous slide |
-| <kbd>down</kbd> | next slide |
+$$
+\mathbf{A}=\begin{pmatrix}
+ a_{11} & a_{12} & \cdots & a_{1n} \\
+ a_{21} & a_{22} & \cdots & a_{2n} \\
+ \vdots & \vdots & \ddots & \vdots \\
+ a_{m1} & a_{m2} & \cdots & a_{mn} \\
+\end{pmatrix} \cdot \quad\mathbf{B}=\begin{pmatrix}
+ b_{11} & b_{12} & \cdots & b_{1p} \\
+ b_{21} & b_{22} & \cdots & b_{2p} \\
+ \vdots & \vdots & \ddots & \vdots \\
+ b_{n1} & b_{n2} & \cdots & b_{np} \\
+\end{pmatrix}
+$$
 
-<!-- https://sli.dev/guide/animations.html#click-animation -->
-<img
-  v-click
-  class="absolute -bottom-9 -left-7 w-80 opacity-50"
-  src="https://sli.dev/assets/arrow-bottom-left.svg"
-  alt=""
-/>
-<p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
+$$
+\mathbf{C} = \begin{pmatrix}
+ a_{11}b_{11} +\cdots + a_{1n}b_{n1} & a_{11}b_{12} +\cdots + a_{1n}b_{n2} & \cdots & a_{11}b_{1p} +\cdots + a_{1n}b_{np} \\
+ a_{21}b_{11} +\cdots + a_{2n}b_{n1} & a_{21}b_{12} +\cdots + a_{2n}b_{n2} & \cdots & a_{21}b_{1p} +\cdots + a_{2n}b_{np} \\
+\vdots & \vdots & \ddots & \vdots \\
+ a_{m1}b_{11} +\cdots + a_{mn}b_{n1} & a_{m1}b_{12} +\cdots + a_{mn}b_{n2} & \cdots & a_{m1}b_{1p} +\cdots + a_{mn}b_{np} \\
+\end{pmatrix} 
+$$
+
+<!--
+Referências: https://www.ibm.com/think/topics/parallel-computing
+-->
 
 ---
-layout: two-cols
 layoutClass: gap-16
 ---
 
-# Table of contents
+# Paralelismo
 
-You can use the `Toc` component to generate a table of contents for your slides:
+Só é possível em sistemas multi-core ou com múltiplos processadores onde cada core ou processador executa instruções independentemente.
 
-```html
-<Toc minDepth="1" maxDepth="1"></Toc>
-```
+![Parallel Computing](./image.png "Fonte: https://hpc.llnl.gov/documentation/tutorials/introduction-parallel-computing-tutorial") 
 
-The title will be inferred from your slide content, or you can override it with `title` and `level` in your frontmatter.
-
-::right::
-
-<Toc v-click minDepth="1" maxDepth="2"></Toc>
 
 ---
 layout: image-right
-image: https://cover.sli.dev
+image: ./cassino.jpeg
 ---
 
-# Code
+# Método de Monte Carlo
 
-Use code snippets and get the highlighting directly, and even types hover![^1]
+Imagine que você tem um problema complicado demais para resolver com matemática tradicional.
 
-```ts {all|5|7|7-8|10|all} twoslash
-// TwoSlash enables TypeScript hover information
-// and errors in markdown code blocks
-// More at https://shiki.style/packages/twoslash
+Uma maneira legal de lidar com isso é usando números aleatórios para encontrar uma solução. Você gera um monte de números aleatórios e vê quantos deles se encaixam nas regras que você está trabalhando.
 
-import { computed, ref } from 'vue'
+Essa técnica é muito útil para obter respostas numéricas quando o problema é difícil demais para resolver analiticamente.
 
-const count = ref(0)
-const doubled = computed(() => count.value * 2)
-
-doubled.value = 2
-```
-
-<arrow v-click="[4, 5]" x1="350" y1="310" x2="195" y2="334" color="#953" width="2" arrowSize="1" />
-
-<!-- This allow you to embed external code blocks -->
-<<< @/snippets/external.ts#snippet
-
-<!-- Footer -->
-[^1]: [Learn More](https://sli.dev/guide/line-highlighting)
-
-<!-- Inline style -->
-<style>
-.footnotes-sep {
-  @apply mt-5 opacity-10;
-}
-.footnotes {
-  @apply text-sm opacity-75;
-}
-.footnote-backref {
-  display: none;
-}
-</style>
-
-<!--
-Notes can also sync with clicks
-
-[click] This will be highlighted after the first click
-
-[click] Highlighted with `count = ref(0)`
-
-[click:3] Last click (skip two clicks)
--->
 
 ---
 level: 2
 ---
 
-# Shiki Magic Move
+# Calculando uma aproximação de Pi com Go
 
-Powered by [shiki-magic-move](https://shiki-magic-move.netlify.app/), Slidev supports animations across multiple code snippets.
+```go
+package main
 
-Add multiple code blocks and wrap them with <code>````md magic-move</code> (four backticks) to enable the magic move. For example:
+import (
+	"math/rand/v2"
+	"sync"
+)
 
-````md magic-move {lines: true}
-```ts {*|2|*}
-// step 1
-const author = reactive({
-  name: 'John Doe',
-  books: [
-    'Vue 2 - Advanced Guide',
-    'Vue 3 - Basic Guide',
-    'Vue 4 - The Mystery'
-  ]
-})
-```
+// Quanto maior o número de samples, mais preciso o resultado
+func MonteCarloPi(numSamples int) float64 {
+	countInside := 0
 
-```ts {*|1-2|3-4|3-4,8}
-// step 2
-export default {
-  data() {
-    return {
-      author: {
-        name: 'John Doe',
-        books: [
-          'Vue 2 - Advanced Guide',
-          'Vue 3 - Basic Guide',
-          'Vue 4 - The Mystery'
-        ]
-      }
-    }
-  }
+	for i := 0; i < numSamples; i++ {
+		x := rand.Float64()
+		y := rand.Float64()
+		if x*x+y*y <= 1 {
+			countInside++
+		}
+	}
+
+	return (float64(countInside) / float64(numSamples)) * 4
 }
 ```
 
-```ts
-// step 3
-export default {
-  data: () => ({
-    author: {
-      name: 'John Doe',
-      books: [
-        'Vue 2 - Advanced Guide',
-        'Vue 3 - Basic Guide',
-        'Vue 4 - The Mystery'
-      ]
-    }
-  })
+---
+
+# Paralelizando o cálculo de Pi com Go
+
+````md magic-move
+```go
+package main
+
+import (
+	"math/rand/v2"
+	"sync"
+)
+```
+```go
+func monteCarloPiWorker(numSamples int, results chan int, wg *sync.WaitGroup) {
+	defer wg.Done()
+	countInside := 0
+
+	for i := 0; i < numSamples; i++ {
+		x := rand.Float64()
+		y := rand.Float64()
+		if x*x+y*y <= 1 {
+			countInside++
+		}
+	}
+
+	results <- countInside
 }
 ```
+```go
+func MonteCarloPiParallel(numSamples, numWorkers int) float64 {
+	var wg sync.WaitGroup
+	results := make(chan int, numWorkers)
+	samplesPerWorker := numSamples / numWorkers
 
-Non-code blocks are ignored.
+	for i := 0; i < numWorkers; i++ {
+		wg.Add(1)
+		go monteCarloPiWorker(samplesPerWorker, results, &wg)
+	}
 
-```vue
-<!-- step 4 -->
-<script setup>
-const author = {
-  name: 'John Doe',
-  books: [
-    'Vue 2 - Advanced Guide',
-    'Vue 3 - Basic Guide',
-    'Vue 4 - The Mystery'
-  ]
+	wg.Wait()
+	close(results)
+
+	totalInside := 0
+	for countInside := range results {
+		totalInside += countInside
+	}
+
+	return (float64(totalInside) / float64(numSamples)) * 4
 }
-</script>
 ```
 ````
 
 ---
 
-# Components
+# Benchmarks
 
-<div grid="~ cols-2 gap-4">
-<div>
+```go
+package main
 
-You can use Vue components directly inside your slides.
+import (
+	"runtime"
+	"testing" 
+)
 
-We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
+var samples = 1000000
 
-```html
-<Counter :count="10" />
+func BenchmarkMonteCarloPi(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		MonteCarloPi(samples)
+	}
+}
+
+func BenchmarkMonteCarloPiParallel(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		MonteCarloPiParallel(samples, runtime.NumCPU())
+	}
+}
+
 ```
 
-<!-- ./components/Counter.vue -->
-<Counter :count="10" m="t-4" />
+---
 
-Check out [the guides](https://sli.dev/builtin/components.html) for more.
+# Benchmarks
 
-</div>
-<div>
+```bash
+$ go test -benchmem -bench=.
 
-```html
-<Tweet id="1390115482657726468" />
+goos: linux
+goarch: amd64
+pkg: example/sieve
+cpu: Intel(R) Core(TM) i5-8300H CPU @ 2.30GHz
+BenchmarkMonteCarloPi-8                   51        21019220 ns/op               0 B/op         0 allocs/op
+BenchmarkMonteCarloPiParallel-8          199         9788952 ns/op             596 B/op        10 allocs/op
+PASS
+ok      example/montecarlo   3.689s
 ```
 
-<Tweet id="1390115482657726468" scale="0.65" />
-
-</div>
-</div>
-
-<!--
-Presenter note with **bold**, *italic*, and ~~striked~~ text.
-
-Also, HTML elements are valid:
-<div class="flex w-full">
-  <span style="flex-grow: 1;">Left content</span>
-  <span>Right content</span>
-</div>
--->
-
----
-class: px-20
 ---
 
-# Themes
+# Calculando uma aproximação de Pi com JavaScript
 
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
+```javascript
+function monteCarloPi(numSamples) {
+  let countInside = 0;
 
-<div grid="~ cols-2 gap-2" m="t-2">
-
-```yaml
----
-theme: default
----
-```
-
-```yaml
----
-theme: seriph
----
-```
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true" alt="">
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true" alt="">
-
-</div>
-
-Read more about [How to use a theme](https://sli.dev/themes/use.html) and
-check out the [Awesome Themes Gallery](https://sli.dev/themes/gallery.html).
-
----
-
-# Clicks Animations
-
-You can add `v-click` to elements to add a click animation.
-
-<div v-click>
-
-This shows up when you click the slide:
-
-```html
-<div v-click>This shows up when you click the slide.</div>
-```
-
-</div>
-
-<br>
-
-<v-click>
-
-The <span v-mark.red="3"><code>v-mark</code> directive</span>
-also allows you to add
-<span v-mark.circle.orange="4">inline marks</span>
-, powered by [Rough Notation](https://roughnotation.com/):
-
-```html
-<span v-mark.underline.orange>inline markers</span>
-```
-
-</v-click>
-
-<div mt-20 v-click>
-
-[Learn More](https://sli.dev/guide/animations#click-animation)
-
-</div>
-
----
-
-# Motions
-
-Motion animations are powered by [@vueuse/motion](https://motion.vueuse.org/), triggered by `v-motion` directive.
-
-```html
-<div
-  v-motion
-  :initial="{ x: -80 }"
-  :enter="{ x: 0 }"
-  :click-3="{ x: 80 }"
-  :leave="{ x: 1000 }"
->
-  Slidev
-</div>
-```
-
-<div class="w-60 relative">
-  <div class="relative w-40 h-40">
-    <img
-      v-motion
-      :initial="{ x: 800, y: -100, scale: 1.5, rotate: -50 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-square.png"
-      alt=""
-    />
-    <img
-      v-motion
-      :initial="{ y: 500, x: -100, scale: 2 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-circle.png"
-      alt=""
-    />
-    <img
-      v-motion
-      :initial="{ x: 600, y: 400, scale: 2, rotate: 100 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-triangle.png"
-      alt=""
-    />
-  </div>
-
-  <div
-    class="text-5xl absolute top-14 left-40 text-[#2B90B6] -z-1"
-    v-motion
-    :initial="{ x: -80, opacity: 0}"
-    :enter="{ x: 0, opacity: 1, transition: { delay: 2000, duration: 1000 } }">
-    Slidev
-  </div>
-</div>
-
-<!-- vue script setup scripts can be directly used in markdown, and will only affects current page -->
-<script setup lang="ts">
-const final = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scale: 1,
-  transition: {
-    type: 'spring',
-    damping: 10,
-    stiffness: 20,
-    mass: 2
+  for (let i = 0; i < numSamples; i++) {
+    const x = Math.random();
+    const y = Math.random();
+    if (x * x + y * y <= 1) {
+      countInside++;
+    }
   }
+
+  return (countInside / numSamples) * 4;
 }
-</script>
-
-<div
-  v-motion
-  :initial="{ x:35, y: 30, opacity: 0}"
-  :enter="{ y: 0, opacity: 1, transition: { delay: 3500 } }">
-
-[Learn More](https://sli.dev/guide/animations.html#motion)
-
-</div>
+```
 
 ---
 
-# LaTeX
+# Paralelizando o cálculo de Pi com Node.js
 
-LaTeX is supported out-of-box. Powered by [KaTeX](https://katex.org/).
+````md magic-move
+```javascript
+// monte-carlo-worker.js
+import { parentPort } from 'node:worker_threads'
 
-<div h-3 />
+parentPort.on('message', (numSamples) => {
+  let countInside = 0
 
-Inline $\sqrt{3x-1}+(1+x)^2$
+  for (let i = 0; i < numSamples; i++) {
+    const x = Math.random()
+    const y = Math.random()
 
-Block
-$$ {1|3|all}
-\begin{aligned}
-\nabla \cdot \vec{E} &= \frac{\rho}{\varepsilon_0} \\
-\nabla \cdot \vec{B} &= 0 \\
-\nabla \times \vec{E} &= -\frac{\partial\vec{B}}{\partial t} \\
-\nabla \times \vec{B} &= \mu_0\vec{J} + \mu_0\varepsilon_0\frac{\partial\vec{E}}{\partial t}
-\end{aligned}
-$$
-
-[Learn more](https://sli.dev/features/latex)
-
----
-
-# Diagrams
-
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
-
-<div class="grid grid-cols-4 gap-5 pt-4 -mb-6">
-
-```mermaid {scale: 0.5, alt: 'A simple sequence diagram'}
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
-```
-
-```mermaid {theme: 'neutral', scale: 0.8}
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
-
-```mermaid
-mindmap
-  root((mindmap))
-    Origins
-      Long history
-      ::icon(fa fa-book)
-      Popularisation
-        British popular psychology author Tony Buzan
-    Research
-      On effectiveness<br/>and features
-      On Automatic creation
-        Uses
-            Creative techniques
-            Strategic planning
-            Argument mapping
-    Tools
-      Pen and paper
-      Mermaid
-```
-
-```plantuml {scale: 0.7}
-@startuml
-
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
-}
-
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
-
-cloud {
-  [Example 1]
-}
-
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
+    if (x * x + y * y <= 1) {
+      countInside++
+    }
   }
-  frame "Foo" {
-    [Frame 4]
-  }
+
+  parentPort.postMessage(countInside);
+})
+```
+```javascript {*}{maxHeight:'100px'}
+// monte-carlo-parallel.js
+import { Worker } from 'node:worker_threads'
+
+export function monteCarloPiParallel(numSamples, numWorkers) {
+  return new Promise((resolve, reject) => {
+    const samplesPerWorker = Math.floor(numSamples / numWorkers)
+    const workers = []
+    let totalInside = 0
+    let completedWorkers = 0
+
+    for (let i = 0; i < numWorkers; i++) {
+      const worker = new Worker('./monte-carlo-worker.js')
+      workers.push(worker)
+
+      worker.on('message', (countInside) => {
+        totalInside += countInside
+        completedWorkers++
+        if (completedWorkers === numWorkers) resolve((totalInside / numSamples) * 4)
+      })
+
+      worker.on('error', (err) => { reject(err) })
+      worker.postMessage(samplesPerWorker)
+    }
+  })
 }
-
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
-
-@enduml
 ```
-
-</div>
-
-Learn More: [Mermaid Diagrams](https://sli.dev/guide/features/mermaid) and [PlantUML Diagrams](https://sli.dev/guide/features/plantuml)
-
----
-foo: bar
-dragPos:
-  square: 691,32,167,_,-16
----
-
-# Draggable Elements
-
-Double-click on the draggable elements to edit their positions.
-
-<br>
-
-###### Directive Usage
-
-```md
-<img v-drag="'square'" src="https://sli.dev/logo.png">
-```
-
-<br>
-
-###### Component Usage
-
-```md
-<v-drag text-3xl>
-  <carbon:arrow-up />
-  Use the `v-drag` component to have a draggable container!
-</v-drag>
-```
-
-<v-drag pos="511,263,261,_,-15">
-  <div text-center text-3xl border border-main rounded>
-    Double-click me!
-  </div>
-</v-drag>
-
-<img v-drag="'square'" src="https://sli.dev/logo.png">
-
-###### Draggable Arrow
-
-```md
-<v-drag-arrow two-way />
-```
-
-<v-drag-arrow pos="67,452,253,46" two-way op70 />
-
----
-src: ./pages/imported-slides.md
-hide: false
----
+````
 
 ---
 
-# Monaco Editor
+# Benchmarks
 
-Slidev provides built-in Monaco Editor support.
+```javascript {*}{maxHeight:'400px'}
+import Benchmark from 'benchmark'
+import { monteCarloPi } from './monte-carlo.js'
+import { monteCarloPiParallel } from './monte-carlo-parallel.js'
 
-Add `{monaco}` to the code block to turn it into an editor:
+const numSamples = 1000000
+const numWorkers = 8
 
-```ts {monaco}
-import { ref } from 'vue'
-import { emptyArray } from './external'
+const suite = new Benchmark.Suite
 
-const arr = ref(emptyArray(10))
+suite
+  .add('MonteCarloPi (single-threaded)', (deferred) => {
+    monteCarloPi(numSamples)
+    deferred.resolve()
+  }, { defer: true })
+  .add('MonteCarloPiParallel (multi-threaded)', {
+    defer: true,
+    fn: async (deferred) => {
+      await monteCarloPiParallel(numSamples, numWorkers)
+      deferred.resolve()
+    }
+  })
+  .on('cycle', (event) => {
+    console.log(String(event.target))
+  })
+  .on('complete', function() {
+    console.log(`Fastest is ${this.filter('fastest').map('name')}`)
+  })
+  .run({ 'async': true })
 ```
 
-Use `{monaco-run}` to create an editor that can execute the code directly in the slide:
+---
 
-```ts {monaco-run}
-import { version } from 'vue'
-import { emptyArray, sayHello } from './external'
+# Benchmarks
 
-sayHello()
-console.log(`vue ${version}`)
-console.log(emptyArray<number>(10).reduce(fib => [...fib, fib.at(-1)! + fib.at(-2)!], [1, 1]))
+```bash
+$ node benchmark.js
+MonteCarloPi (single-threaded) x 40.00 ops/sec ±1.84% (65 runs sampled)
+MonteCarloPiParallel (multi-threaded) x 6.43 ops/sec ±10.17% (34 runs sampled)
+Fastest is MonteCarloPi (single-threaded)
 ```
+
+---
+
+# Análise
+
+- Go é mais eficiente para processamento paralelo no exemplo citado;
+- Node.js perde em desempenho no processamento paralelo no exemplo citado.
+
 
 ---
 layout: center
 class: text-center
 ---
 
-# Learn More
+# Obrigado
 
-[Documentation](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/showcases.html)
+[@douglasdemoura](https://twitter.com/douglasdemoura) · [GitHub](https://github.com/douglasdemoura) · [LinkedIn](https://www.linkedin.com/in/dougmoura/)
 
 <PoweredBySlidev mt-10 />
