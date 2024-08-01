@@ -361,12 +361,15 @@ Fastest is MonteCarloPi (single-threaded)
 
 
 ---
-layout: center
-class: text-center
----
 
 # Obrigado
+- **Nome:** Douglas Moura
+- **E-mail:** contato@douglasmoura.dev
+- **LinkedIn:** [https://www.linkedin.com/in/dougmoura](https://www.linkedin.com/in/dougmoura)
+- **GitHub:** [https://github.com/douglasdemoura](https://github.com/douglasdemoura)
+- **Twitter:** [@douglasdemoura](https://twitter.com/douglasdemoura)
 
-[@douglasdemoura](https://twitter.com/douglasdemoura) · [GitHub](https://github.com/douglasdemoura) · [LinkedIn](https://www.linkedin.com/in/dougmoura/)
 
-<PoweredBySlidev mt-10 />
+### Recursos adicionais:
+- **Repositório do projeto:** [https://github.com/processamento-paralelo-go-vs-nodejs](https://github.com/processamento-paralelo-go-vs-nodejs)
+
