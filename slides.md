@@ -239,17 +239,17 @@ ok      example/montecarlo   3.689s
 
 ```javascript
 function monteCarloPi(numSamples) {
-  let countInside = 0;
+  let countInside = 0
 
   for (let i = 0; i < numSamples; i++) {
-    const x = Math.random();
-    const y = Math.random();
+    const x = Math.random()
+    const y = Math.random()
     if (x * x + y * y <= 1) {
-      countInside++;
+      countInside++
     }
   }
 
-  return (countInside / numSamples) * 4;
+  return (countInside / numSamples) * 4
 }
 ```
 
