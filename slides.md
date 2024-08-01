@@ -93,7 +93,7 @@ Só é possível em sistemas multi-core ou com múltiplos processadores onde cad
 
 ---
 layout: image-right
-image: ./images/cassino.png
+image: /images/cassino.png
 ---
 
 # Método de Monte Carlo
