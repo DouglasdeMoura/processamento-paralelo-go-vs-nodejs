@@ -1,0 +1,17 @@
+{
+  "name": "javascript",
+  "version": "1.0.0",
+  "main": "estimate-circle-area.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test *.test.js",
+    "benchmark": "node benchmark.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "benchmark": "^2.1.4"
+  }
+}
