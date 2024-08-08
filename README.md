@@ -1,11 +1,19 @@
-# Welcome to [Slidev](https://github.com/slidevjs/slidev)!
+# Processamento paralelo: Go vs. Node.js
 
-To start the slide show:
+Slides da palestra apresentada no evento [NodeBR](https://nodebr.org/#/home) no dia 1 de agosto de 2024.
+
+Os slides estão disponíveis em: [https://processamento-paralelo-go-nodejs.netlify.app/](https://processamento-paralelo-go-nodejs.netlify.app/).
+
+Você pode ver o vídeo da apresentação no [YouTube](https://www.youtube.com/watch?v=0jpi_JmQOTA&t=9392s).
+
+## Como visualizar
+
+Para começar o slide show:
 
 - `npm install`
 - `npm run dev`
-- visit <http://localhost:3030>
+- visite <http://localhost:3030>
 
-Edit the [slides.md](./slides.md) to see the changes.
+Edite [slides.md](./slides.md) para ver as alterações.
 
-Learn more about Slidev at the [documentation](https://sli.dev/).
+Leia mais sobre Slidev na [documentação](https://sli.dev/).
